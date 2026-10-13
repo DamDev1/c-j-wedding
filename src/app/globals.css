@@ -1,0 +1,183 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ */
+/* Design tokens (from the Figma file)                                 */
+/* ------------------------------------------------------------------ */
+@theme {
+  --color-cream: #fffcf7;
+  --color-olive: #3f4b22;
+  --color-blush: #e8b8b4;
+  --color-blush-bg: #f4e6e2;
+  --color-gold: #b8955a;
+  --color-champagne: #fdefd8;
+  --color-lime: #d5fc76;
+  --color-rose-ink: #603936;
+  --color-ink: #252222;
+  --color-leaf: #3c6b0e;
+
+  --font-script: "Pinyon Script", cursive;
+  --font-body: "EB Garamond", Georgia, serif;
+  --font-display: "Cormorant Garamond", Georgia, serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html {
+  background: var(--color-cream);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  background: var(--color-cream);
+  color: var(--color-olive);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ------------------------------------------------------------------ */
+/* Scroll-in reveals (see components/Reveal.tsx)                       */
+/* Only hidden when JS is available and motion is allowed.             */
+/* ------------------------------------------------------------------ */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  [data-reveal] {
+    opacity: 0;
+    transition:
+      opacity 0.9s var(--ease-out-expo),
+      transform 1.1s var(--ease-out-expo);
+    transition-delay: var(--d, 0ms);
+    will-change: opacity, transform;
+  }
+  [data-reveal="up"] {
+    transform: translateY(28px);
+  }
+  [data-reveal="arch"] {
+    transform: translateY(72px) scale(0.96);
+  }
+  [data-reveal="fade"] {
+    transform: none;
+  }
+  [data-reveal].is-in {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Hero: the arch opens up as you scroll (see components/Hero.tsx)     */
+/*                                                                     */
+/* JS only writes four unitless numbers onto .hero-stage:              */
+/*   --e   eased "how open" value, 0 = arch card, 1 = full screen      */
+/*   --t1  invitation line fades in   (0 -> 1)                         */
+/*   --t2  date + venue fade in       (0 -> 1)                         */
+/*   --t3  RSVP button fades in       (0 -> 1)                         */
+/* Everything else is derived here in CSS.                             */
+/* ------------------------------------------------------------------ */
+.hero-stage {
+  --e: 0;
+  --t1: 0;
+  --t2: 0;
+  --t3: 0;
+  --arch-w: min(522px, 88vw);
+  --arch-h: min(718px, 80svh);
+  --ix: max(0px, calc((100vw - var(--arch-w)) / 2));
+  --iy: max(0px, calc((100svh - var(--arch-h)) / 2));
+  --open: calc(1 - var(--e));
+}
+
+.hero-photo {
+  clip-path: inset(
+    calc(var(--open) * var(--iy)) calc(var(--open) * var(--ix))
+      calc(var(--open) * var(--iy)) calc(var(--open) * var(--ix)) round
+      calc(var(--open) * 300px) calc(var(--open) * 300px) 0 0
+  );
+}
+
+.hero-photo-img {
+  transform: scale(calc(1 + var(--e) * 0.08));
+  transform-origin: 50% 40%;
+}
+
+.hero-veil {
+  opacity: calc(0.4 + var(--e) * 0.12);
+}
+
+.hero-t1 {
+  opacity: var(--t1);
+  transform: translateY(calc((1 - var(--t1)) * 18px));
+}
+.hero-t2 {
+  opacity: var(--t2);
+  transform: translateY(calc((1 - var(--t2)) * 18px));
+}
+.hero-t3 {
+  opacity: var(--t3);
+  transform: translateY(calc((1 - var(--t3)) * 18px));
+}
+.hero-stage[data-cta="off"] .hero-t3 {
+  visibility: hidden;
+}
+
+.hero-cue {
+  opacity: calc(1 - var(--e) * 5);
+}
+
+/* Header flips to light once the photo fills the screen */
+.hero-fg {
+  transition: color 0.5s ease;
+}
+.hero-btn {
+  transition:
+    background-color 0.5s ease,
+    color 0.5s ease,
+    transform 0.3s ease;
+}
+.hero-stage[data-open="true"] .hero-fg {
+  color: #fff;
+}
+.hero-stage[data-open="true"] .hero-btn {
+  background-color: #fff;
+  color: var(--color-olive);
+}
+
+@keyframes cue-scan {
+  to {
+    transform: translateY(100%);
+  }
+}
+.hero-cue-line::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  transform: translateY(-100%);
+  animation: cue-scan 1.8s ease-in-out infinite;
+}
+
+/* No JS: skip the pin and show the finished state */
+@media (scripting: none) {
+  .hero-stage {
+    --e: 1;
+    --t1: 1;
+    --t2: 1;
+    --t3: 1;
+  }
+  .hero-wrap {
+    height: 100svh !important;
+  }
+}
+
+/* Reduced motion: no pin, no scroll-driven effect, finished state */
+@media (prefers-reduced-motion: reduce) {
+  .hero-wrap {
+    height: 100svh !important;
+  }
+  .hero-cue-line::after {
+    animation: none;
+  }
+}
