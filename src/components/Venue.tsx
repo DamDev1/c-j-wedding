@@ -11,7 +11,7 @@ export function Venue() {
       id="venue"
       className="relative flex items-start justify-center overflow-hidden bg-blush-bg px-6 pt-20 pb-40 md:min-h-[800px] md:pt-[62px] md:pb-0"
     >
-      <FloralBottom tone="brown" />
+      <FloralBottom />
 
       <div className="relative flex w-full max-w-[863px] flex-col items-center gap-10 md:w-auto md:max-w-none md:flex-row md:gap-11">
         <Reveal className="flex w-full flex-col items-start justify-center gap-4 md:h-[284px] md:w-[289px]">
@@ -40,7 +40,7 @@ export function Venue() {
             role="img"
             aria-label="The glasshouse at The Nest Gardens"
             className="aspect-[530/585] w-full bg-white/50 bg-cover bg-center"
-            style={{ backgroundImage: "url(/images/venue.png)" }}
+            style={{ backgroundImage: "url(/images/venue.jpg)" }}
           />
         </Reveal>
       </div>

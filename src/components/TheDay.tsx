@@ -13,7 +13,7 @@ export function TheDay() {
       id="the-day"
       className="relative flex items-center justify-center overflow-hidden bg-olive px-6 pt-20 pb-40 md:min-h-[800px] md:pt-[86px] md:pb-[166px]"
     >
-      <FloralBottom tone="gold" />
+      <FloralBottom />
 
       <div className="relative flex w-full max-w-[1078px] flex-col items-center gap-10 md:gap-12">
         <Reveal>

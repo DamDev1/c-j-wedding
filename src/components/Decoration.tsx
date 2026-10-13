@@ -23,18 +23,13 @@ export function FloralFrame() {
   );
 }
 
-type FloralBottomProps = {
-  /** gold = on the olive "The day" section, brown = on the blush "Venue" section */
-  tone: "gold" | "brown";
-};
-
-/** Floral border that sits along the bottom edge and bleeds off it. */
-export function FloralBottom({ tone }: FloralBottomProps) {
+/** Floral border that sits along the bottom edge using Decoration-2.svg. */
+export function FloralBottom() {
   return (
     <div
       aria-hidden
-      className="pointer-events-none absolute bottom-[-75px] left-1/2 aspect-[1477.566/535.908] w-[max(102.6%,1100px)] -translate-x-1/2 bg-contain bg-bottom bg-no-repeat"
-      style={{ backgroundImage: `url(/images/floral-bottom-${tone}.svg)` }}
+      className="pointer-events-none absolute bottom-[-20px] left-1/2 aspect-[1440/463] w-[max(102.6%,1100px)] -translate-x-1/2 bg-contain bg-bottom bg-no-repeat"
+      style={{ backgroundImage: "url(/images/Decoration-2.svg)" }}
     />
   );
 }
