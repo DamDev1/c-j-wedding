@@ -1,5 +1,7 @@
 import { DressCode } from "@/components/DressCode";
+import { End } from "@/components/End";
 import { Hero } from "@/components/Hero";
+import { Letter } from "@/components/Letter";
 import { Outfit } from "@/components/outfit";
 import { TheDay } from "@/components/TheDay";
 import { Venue } from "@/components/Venue";
@@ -14,7 +16,8 @@ export default function Home() {
       <Venue />
       <DressCode />
       <Outfit />
-      {/* Still to build from Figma: Programme, RSVP form (ids #programme, #rsvp) */}
+      <Letter />
+      <End />
     </main>
   );
 }

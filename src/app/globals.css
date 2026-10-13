@@ -184,3 +184,19 @@ body {
     animation: none;
   }
 }
+
+/* ------------------------------------------------------------------ */
+/* Letter typewriter cursor                                            */
+/* ------------------------------------------------------------------ */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.letter-cursor {
+  animation: blink 0.7s step-end infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .letter-cursor {
+    animation: none;
+  }
+}

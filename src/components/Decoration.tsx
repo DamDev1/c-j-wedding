@@ -16,7 +16,7 @@ export function FloralFrame() {
       className="pointer-events-none absolute inset-0 overflow-hidden"
     >
       <div
-        className="absolute inset-0 bg-[length:100%_100%] bg-center bg-no-repeat"
+        className="absolute inset-0 bg-center bg-no-repeat"
         style={{ backgroundImage: "url(/images/Decoration.png)" }}
       />
     </div>
