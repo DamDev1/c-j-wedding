@@ -7,8 +7,8 @@ type RevealProps = {
   className?: string;
   /** Stagger delay in ms. */
   delay?: number;
-  /** up = rise 28px, arch = rise 72px + scale in, fade = opacity only */
-  variant?: "up" | "arch" | "fade";
+  /** up = rise 28px, arch = rise 72px + scale in, slide = rise 150px, fade = opacity only */
+  variant?: "up" | "arch" | "slide" | "fade";
 };
 
 /**

@@ -59,6 +59,9 @@ body {
   [data-reveal="arch"] {
     transform: translateY(72px) scale(0.96);
   }
+  [data-reveal="slide"] {
+    transform: translateY(150px);
+  }
   [data-reveal="fade"] {
     transform: none;
   }
