@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "./Button";
 import { FloralFrame } from "./Decoration";
+import { useRouter } from "next/navigation";
 
 const TITLE = "A little note from us";
 
@@ -13,14 +14,12 @@ const BODY_LINES = [
     "Thank you for understanding, and for being part of our day. We can\u2019t wait to celebrate with you",
 ];
 
-const CHAR_DELAY = 28; // ms per character
-const PARAGRAPH_PAUSE = 300; // pause between paragraphs
-const START_DELAY = 600; // wait before typing begins
+const CHAR_DELAY = 28;
+const PARAGRAPH_PAUSE = 300;
+const START_DELAY = 600;
 
-// Vertical position of each punched hole, as a % of the sheet height
 const HOLES = ["12%", "35%", "66%", "89%"];
 
-// Typing is tracked as one running character count across all paragraphs.
 const STARTS = BODY_LINES.reduce<number[]>((acc, _line, i) => {
     acc.push(i === 0 ? 0 : acc[i - 1] + BODY_LINES[i - 1].length);
     return acc;
@@ -33,6 +32,7 @@ export function Letter() {
     const [started, setStarted] = useState(false);
     const [typed, setTyped] = useState(0);
     const [showCursor, setShowCursor] = useState(true);
+    const router = useRouter()
 
     // Start when the section scrolls into view
     useEffect(() => {
@@ -165,7 +165,7 @@ export function Letter() {
             </div>
 
             <div className="relative z-10">
-                <Button href="#rsvp" tone="olive">
+                <Button href="#rsvp" tone="olive" onClick={() => router.push("/rsvp")}>
                     RSVP
                 </Button>
             </div>

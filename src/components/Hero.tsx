@@ -2,22 +2,15 @@
 
 import { useEffect, useRef } from "react";
 import { Button } from "./Button";
+import { useRouter } from "next/navigation";
 
 const clamp01 = (n: number) => Math.min(1, Math.max(0, n));
 const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
 
-/**
- * Hero with a scroll-driven reveal.
- *
- * The section is tall and the stage inside it is `sticky`, so the stage stays
- * pinned while you scroll through the extra height. Scroll progress p (0 -> 1)
- * opens the arched photo to full screen, then fades in the invitation text
- * around the names. All the visual work is CSS (see `.hero-*` in globals.css);
- * this component only writes a few numbers onto the stage element.
- */
 export function Hero() {
   const wrapRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
+  const router = useRouter()
 
   useEffect(() => {
     const wrap = wrapRef.current;
@@ -99,20 +92,17 @@ export function Hero() {
               >
                 Programme
               </a>
-              <Button href="#rsvp" className="hero-btn">
+              <Button className="hero-btn" onClick={() => router.push("/rsvp")}>
                 RSVP
               </Button>
             </nav>
           </div>
         </header>
 
-        {/* Photo: clipped to an arch, opens to full screen on scroll */}
         <div className="hero-photo absolute inset-0 z-10" aria-hidden>
           <div
             className="hero-photo-img absolute inset-0 bg-cover bg-no-repeat"
             style={{
-              // The photo goes in /public/images/hero.png. Until it exists the
-              // gradient shows, so the arch is never an empty box.
               backgroundImage:
                 "url(/images/hero.jpg), linear-gradient(160deg, #1c4a5a 0%, #5b4a2e 55%, #a1623a 100%)",
               backgroundPosition: "50% 34.8%",
@@ -121,7 +111,6 @@ export function Hero() {
           <div className="hero-veil absolute inset-0 bg-black" />
         </div>
 
-        {/* Copy: the names are always visible, the rest is revealed */}
         <div className="absolute top-[calc(50%+18px)] left-1/2 z-20 flex w-[min(515px,90vw)] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-6 text-center text-white">
           <div className="flex flex-col items-center gap-3">
             <div className="hero-t1 text-base leading-[1.5] font-semibold sm:text-xl sm:whitespace-nowrap">
@@ -144,7 +133,6 @@ export function Hero() {
           </div>
         </div>
 
-        {/* Scroll cue (not in the Figma; the reveal hides the date until you scroll) */}
         <div
           aria-hidden
           className="hero-cue absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-3 text-[11px] tracking-[0.3em] text-olive uppercase"
