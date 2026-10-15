@@ -7,6 +7,7 @@ import "@fontsource/eb-garamond/500.css";
 import "@fontsource/eb-garamond/600.css";
 import "@fontsource/cormorant-garamond/700.css";
 
+import { AccessGate } from "@/components/AccessGate";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -19,10 +20,16 @@ export const viewport: Viewport = {
   themeColor: "#fffcf7",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <AccessGate>{children}</AccessGate>
+      </body>
     </html>
   );
 }
