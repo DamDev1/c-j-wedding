@@ -1,6 +1,7 @@
 import { DressCode } from "@/components/DressCode";
 import { End } from "@/components/End";
 import { Hero } from "@/components/Hero";
+import HeroTwo from "@/components/HeroTwo";
 import { Letter } from "@/components/Letter";
 import { Outfit } from "@/components/outfit";
 import { TheDay } from "@/components/TheDay";
@@ -10,7 +11,8 @@ import { Welcome } from "@/components/Welcome";
 export default function Home() {
   return (
     <main>
-      <Hero />
+      <HeroTwo/>
+      {/* <Hero /> */}
       <Welcome />
       <TheDay />
       <Venue />

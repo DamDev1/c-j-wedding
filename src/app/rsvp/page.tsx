@@ -17,14 +17,19 @@ export type RsvpData = {
     message?: string;
 };
 
-// Default submit handler. Point this at your own endpoint, or pass `onSubmit`.
+// Default submit handler. Sends RSVP data to the Resend-powered /api/rsvp endpoint.
 async function postRsvp(data: RsvpData) {
     const res = await fetch("/api/rsvp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
     });
-    if (!res.ok) throw new Error("Request failed");
+    if (!res.ok) {
+        const errorData = await res.json().catch(() => null);
+        throw new Error(
+            errorData?.error || "Failed to submit RSVP. Please try again."
+        );
+    }
 }
 
 const labelClass = "mb-2 block p-0 text-[15px] font-bold text-[#1b1511]";
@@ -71,9 +76,13 @@ export default function Rsvp({
                 message: message.trim() || undefined,
             });
             setStatus("sent");
-        } catch {
+        } catch (err: unknown) {
             setStatus("idle");
-            setError("Something went wrong. Please try again.");
+            const errorMessage =
+                err instanceof Error
+                    ? err.message
+                    : "Something went wrong. Please try again.";
+            setError(errorMessage);
         }
     }
 
