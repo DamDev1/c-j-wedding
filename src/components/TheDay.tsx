@@ -4,7 +4,6 @@ import { Reveal } from "./Reveal";
 
 const events = [
   { time: "3:00 PM", title: "The Joining Ceremony", place: "The Nest Gardens" },
-  { time: "5:30 PM", title: "The Evening Celebration", place: "The Nest Gardens" },
 ];
 
 export function TheDay() {

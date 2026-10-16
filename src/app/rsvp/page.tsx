@@ -5,8 +5,8 @@ import { useState, type FormEvent } from "react";
 
 // Placeholders from the design — replace with the real details
 const COUPLE = "Chioma & John";
-const RSVP_DEADLINE = "[RSVP deadline]";
-const PLUS_ONE_CONFIRM_DATE = "[date]";
+const RSVP_DEADLINE = "21ˢᵗ October";
+const PLUS_ONE_CONFIRM_DATE = "21ˢᵗ October";
 
 type Reply = "accept" | "decline";
 
@@ -124,7 +124,7 @@ export default function Rsvp({
                                 Will you join us?
                             </h2>
                             <p className="mb-6 text-xl text-olive">
-                                Kindly respond by {RSVP_DEADLINE}.
+                                Kindly respond by  21ˢᵗ October
                             </p>
                         </>
                     )}

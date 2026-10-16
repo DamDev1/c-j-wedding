@@ -30,7 +30,7 @@ export function End() {
 
                 <Reveal delay={150}>
                     <p className="text-xl leading-normal text-white/90 md:text-2xl">
-                        Kindly respond by [RSVP deadline].
+                        Kindly respond by 21ˢᵗ October
                     </p>
                 </Reveal>
 
