@@ -12,6 +12,7 @@ type Reply = "accept" | "decline";
 
 export type RsvpData = {
     name: string;
+    email: string;
     reply: Reply;
     plusOneName?: string;
     message?: string;
@@ -43,6 +44,7 @@ export default function Rsvp({
     onSubmit?: (data: RsvpData) => Promise<void>;
 }) {
     const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
     const [reply, setReply] = useState<Reply | null>(null);
     const [plusOneOpen, setPlusOneOpen] = useState(false);
     const [plusOneName, setPlusOneName] = useState("");
@@ -68,6 +70,7 @@ export default function Rsvp({
         try {
             await onSubmit({
                 name: name.trim(),
+                email: email.trim(),
                 reply,
                 plusOneName:
                     reply === "accept" && plusOneOpen
@@ -110,6 +113,10 @@ export default function Rsvp({
                                     ? "We can\u2019t wait to celebrate with you."
                                     : "We\u2019ll miss you, and thank you for letting us know."}
                             </p>
+                            <p className="mt-3 text-[15px] text-[#5c5449]">
+                                A confirmation has been sent to{" "}
+                                <span className="font-semibold text-olive">{email}</span>.
+                            </p>
                         </>
                     ) : (
                         <>
@@ -138,6 +145,23 @@ export default function Rsvp({
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 placeholder="Your full name"
+                                className={`${fieldClass} h-[55px]`}
+                            />
+                        </div>
+
+                        <div>
+                            <label htmlFor="rsvp-email" className={labelClass}>
+                                Email address
+                            </label>
+                            <input
+                                id="rsvp-email"
+                                name="email"
+                                type="email"
+                                autoComplete="email"
+                                required
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="you@example.com"
                                 className={`${fieldClass} h-[55px]`}
                             />
                         </div>
