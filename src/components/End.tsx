@@ -10,7 +10,7 @@ export function End() {
         >
             {/* Background photo */}
             <div
-                className="absolute inset-0 bg-cover bg-center md:min-h-[800px]"
+                className="absolute inset-0 bg-cover bg-top md:min-h-[800px]"
                 style={{ backgroundImage: "url(/images/gallery-4.jpg)" }}
             />
 
