@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getDatabase } from "@/lib/mongodb";
-import { normalizePhoneNumber } from "@/data/whitelisted-numbers";
+import { normalizePhoneNumber } from "@/lib/phone";
 
 export async function POST(request: Request) {
   try {

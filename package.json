@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "seed": "node scripts/seed-guests.mjs",
+    "reset-db": "node scripts/reset-guests.mjs",
     "fetch-assets": "node scripts/fetch-figma-assets.mjs"
   },
   "dependencies": {
