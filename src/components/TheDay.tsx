@@ -21,7 +21,7 @@ export function TheDay() {
           </h2>
         </Reveal>
 
-        <div className="grid w-full grid-cols-1 gap-5 md:grid-cols-2">
+        <div className="grid w-full grid-cols-1 gap-5 md:grid-cols-1 justify-center items-center">
           {events.map((event, i) => (
             <Reveal key={event.time} delay={i * 150}>
               <div className="flex min-h-[296px] flex-col items-center justify-center gap-4 border-2 border-blush px-6 py-8 text-center text-blush">
@@ -42,8 +42,7 @@ export function TheDay() {
         </div>
 
         <Reveal delay={300}>
-          {/* Points at the programme section/page, which isn't built yet */}
-          <Button href="#programme" tone="white">
+          <Button href="/program" tone="white">
             View the programme
           </Button>
         </Reveal>

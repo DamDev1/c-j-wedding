@@ -5,6 +5,8 @@ import "@fontsource/pinyon-script/400.css";
 import "@fontsource/eb-garamond/400.css";
 import "@fontsource/eb-garamond/500.css";
 import "@fontsource/eb-garamond/600.css";
+import "@fontsource/cormorant-garamond/500.css";
+import "@fontsource/cormorant-garamond/600.css";
 import "@fontsource/cormorant-garamond/700.css";
 
 import { AccessGate } from "@/components/AccessGate";
@@ -28,7 +30,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <AccessGate>{children}</AccessGate>
+        {/* <AccessGate></AccessGate> */}
+        {children}
       </body>
     </html>
   );

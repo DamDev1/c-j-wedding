@@ -35,7 +35,7 @@ export function End() {
                 </Reveal>
 
                 <Reveal delay={300}>
-                    <Button href="#programme" tone="white">
+                    <Button href="/program" tone="white">
                         View the programme
                     </Button>
                 </Reveal>
