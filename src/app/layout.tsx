@@ -30,7 +30,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <AccessGate>{children}</AccessGate>
+        {/* <AccessGate></AccessGate> */}
+        {children}
       </body>
     </html>
   );
