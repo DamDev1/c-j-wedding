@@ -60,7 +60,7 @@ export function HeroTwo() {
           <Reveal delay={200}>
             <div className="text-base leading-[1.5] font-semibold sm:text-xl sm:whitespace-nowrap">
               <p>The families of Okorie &amp; Oladimeji joyfully invite you to</p>
-              <p>the evening celebration of their children</p>
+              <p>the celebration of the joining of their children in marriage</p>
             </div>
           </Reveal>
 
