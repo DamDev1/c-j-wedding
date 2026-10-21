@@ -1,10 +1,67 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { Resend } from "resend";
+import { getDatabase } from "@/lib/mongodb";
+
+export async function GET(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const deviceIdParam = searchParams.get("deviceId");
+
+    const cookieStore = await cookies();
+    const guestCookie = cookieStore.get("wedding_guest_access")?.value;
+
+    if (!guestCookie && !deviceIdParam) {
+      return NextResponse.json({ authenticated: false, hasRsvped: false });
+    }
+
+    const db = await getDatabase();
+    const guests = db.collection("guests");
+
+    let guest = null;
+
+    if (guestCookie) {
+      const [cookiePhone, cookieDeviceId] = guestCookie.split(":");
+      if (cookiePhone && cookieDeviceId) {
+        guest = await guests.findOne({
+          phone: cookiePhone,
+          deviceId: cookieDeviceId,
+          isUsed: true,
+        });
+      }
+    }
+
+    if (!guest && deviceIdParam) {
+      guest = await guests.findOne({
+        deviceId: deviceIdParam.trim(),
+        isUsed: true,
+      });
+    }
+
+    if (!guest) {
+      return NextResponse.json({ authenticated: false, hasRsvped: false });
+    }
+
+    return NextResponse.json({
+      authenticated: true,
+      phone: guest.phone,
+      hasRsvped: Boolean(guest.hasRsvped),
+      reply: guest.rsvpReply || null,
+      name: guest.rsvpName || null,
+    });
+  } catch (error) {
+    console.error("Error in GET /api/rsvp:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch RSVP status." },
+      { status: 500 }
+    );
+  }
+}
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, reply, plusOneName, message } = body;
+    const { name, reply, plusOneName, message, deviceId } = body;
 
     if (!name || typeof name !== "string" || !name.trim()) {
       return NextResponse.json(
@@ -16,6 +73,55 @@ export async function POST(request: Request) {
     if (reply !== "accept" && reply !== "decline") {
       return NextResponse.json(
         { error: "Reply must be either 'accept' or 'decline'." },
+        { status: 400 }
+      );
+    }
+
+    // Identify authenticated guest
+    const cookieStore = await cookies();
+    const guestCookie = cookieStore.get("wedding_guest_access")?.value;
+
+    const db = await getDatabase();
+    const guests = db.collection("guests");
+
+    let guest = null;
+
+    if (guestCookie) {
+      const [cookiePhone, cookieDeviceId] = guestCookie.split(":");
+      if (cookiePhone && cookieDeviceId) {
+        guest = await guests.findOne({
+          phone: cookiePhone,
+          deviceId: cookieDeviceId,
+          isUsed: true,
+        });
+      }
+    }
+
+    if (!guest && deviceId && typeof deviceId === "string") {
+      guest = await guests.findOne({
+        deviceId: deviceId.trim(),
+        isUsed: true,
+      });
+    }
+
+    if (!guest) {
+      return NextResponse.json(
+        {
+          error:
+            "Please unlock the invitation with your phone number before submitting an RSVP.",
+        },
+        { status: 401 }
+      );
+    }
+
+    // Check if this guest phone number has already submitted an RSVP
+    if (guest.hasRsvped) {
+      return NextResponse.json(
+        {
+          error: "You have already submitted your RSVP.",
+          hasRsvped: true,
+          reply: guest.rsvpReply,
+        },
         { status: 400 }
       );
     }
@@ -58,6 +164,23 @@ export async function POST(request: Request) {
     const cleanMessage = message?.trim();
 
     // ----------------------------------------------------
+    // Record RSVP in MongoDB for this guest (prevents duplicate RSVP)
+    // ----------------------------------------------------
+    await guests.updateOne(
+      { _id: guest._id },
+      {
+        $set: {
+          hasRsvped: true,
+          rsvpReply: reply,
+          rsvpName: guestName,
+          rsvpPlusOne: cleanPlusOne || null,
+          rsvpMessage: cleanMessage || null,
+          rsvpSubmittedAt: new Date(),
+        },
+      }
+    );
+
+    // ----------------------------------------------------
     // Notification Email for Couple / Organizers
     // ----------------------------------------------------
     const adminSubject = `Wedding RSVP: ${guestName} (${isAttending ? "Joyfully Accepts" : "Regretfully Declines"})`;
@@ -66,6 +189,7 @@ export async function POST(request: Request) {
       `New RSVP Submission for Chioma & John's Wedding:`,
       ``,
       `Guest Name: ${guestName}`,
+      `Verified Phone: ${guest.phone}`,
       `Reply: ${isAttending ? "Joyfully Accepts" : "Regretfully Declines"}`,
       cleanPlusOne ? `Plus-One: ${cleanPlusOne} (Pending confirmation)` : null,
       cleanMessage ? `Personal Message: "${cleanMessage}"` : null,
@@ -114,9 +238,15 @@ export async function POST(request: Request) {
 
               <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="font-size: 15px; line-height: 1.6;">
                 <tr>
-                  <td style="padding: 8px 0; color: #6b6b6b; width: 130px; vertical-align: top; font-weight: 500;">Guest Name:</td>
+                  <td style="padding: 8px 0; color: #6b6b6b; width: 140px; vertical-align: top; font-weight: 500;">Guest Name:</td>
                   <td style="padding: 8px 0; color: #1b1511; font-weight: 700; font-size: 17px;">${escapeHtml(
                     guestName
+                  )}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; color: #6b6b6b; vertical-align: top; font-weight: 500;">Phone Number:</td>
+                  <td style="padding: 8px 0; color: #1b1511; font-weight: 600;">${escapeHtml(
+                    guest.phone
                   )}</td>
                 </tr>
                 <tr>
@@ -196,19 +326,13 @@ export async function POST(request: Request) {
 
     if (adminEmailResult.error) {
       console.error("Resend admin notification error:", adminEmailResult.error);
-      return NextResponse.json(
-        {
-          error:
-            adminEmailResult.error.message ||
-            "Failed to notify wedding hosts. Please try again.",
-        },
-        { status: 500 }
-      );
     }
 
     return NextResponse.json({
       success: true,
-      adminEmailId: adminEmailResult.data?.id,
+      hasRsvped: true,
+      reply,
+      adminEmailId: adminEmailResult?.data?.id,
     });
   } catch (err) {
     console.error("Error in /api/rsvp:", err);

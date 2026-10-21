@@ -1,11 +1,10 @@
 "use client";
 
 import { FloralFrame } from "@/components/Decoration";
-import { useState, type FormEvent } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 
 // Placeholders from the design — replace with the real details
 const COUPLE = "Chioma & John";
-const RSVP_DEADLINE = "21ˢᵗ October";
 const PLUS_ONE_CONFIRM_DATE = "21ˢᵗ October";
 
 type Reply = "accept" | "decline";
@@ -15,21 +14,27 @@ export type RsvpData = {
     reply: Reply;
     plusOneName?: string;
     message?: string;
+    deviceId?: string;
 };
 
 // Default submit handler. Sends RSVP data to the Resend-powered /api/rsvp endpoint.
-async function postRsvp(data: RsvpData) {
+async function postRsvp(data: RsvpData): Promise<{ success?: boolean; hasRsvped?: boolean; reply?: Reply }> {
     const res = await fetch("/api/rsvp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
     });
+    const responseData = await res.json().catch(() => null);
+
     if (!res.ok) {
-        const errorData = await res.json().catch(() => null);
+        if (responseData?.hasRsvped && responseData?.reply) {
+            return responseData;
+        }
         throw new Error(
-            errorData?.error || "Failed to submit RSVP. Please try again."
+            responseData?.error || "Failed to submit RSVP. Please try again."
         );
     }
+    return responseData || {};
 }
 
 const labelClass = "mb-2 block p-0 text-[15px] font-bold text-[#1b1511]";
@@ -40,15 +45,74 @@ const fieldClass =
 export default function Rsvp({
     onSubmit = postRsvp,
 }: {
-    onSubmit?: (data: RsvpData) => Promise<void>;
+    onSubmit?: (data: RsvpData) => Promise<{ success?: boolean; hasRsvped?: boolean; reply?: Reply }>;
 }) {
     const [name, setName] = useState("");
-    const [reply, setReply] = useState<Reply | null>(null);
+    const [reply, setReply] = useState<Reply | null>(() => {
+        if (typeof window !== "undefined") {
+            const savedReply = localStorage.getItem("cj_wedding_rsvp_reply");
+            if (savedReply === "accept" || savedReply === "decline") {
+                return savedReply;
+            }
+        }
+        return null;
+    });
     const [plusOneOpen, setPlusOneOpen] = useState(false);
     const [plusOneName, setPlusOneName] = useState("");
     const [message, setMessage] = useState("");
-    const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
+    const [status, setStatus] = useState<"idle" | "sending" | "sent">(() => {
+        if (typeof window !== "undefined") {
+            const savedStatus = localStorage.getItem("cj_wedding_rsvp_status");
+            if (savedStatus === "sent") {
+                return "sent";
+            }
+        }
+        return "idle";
+    });
+    const [isChecking, setIsChecking] = useState<boolean>(true);
     const [error, setError] = useState("");
+
+    // Check on mount if this guest's phone number has already submitted an RSVP in MongoDB
+    useEffect(() => {
+        const deviceId =
+            typeof window !== "undefined"
+                ? localStorage.getItem("cj_wedding_device_id") || ""
+                : "";
+
+        async function verifyExistingRsvp() {
+            try {
+                const res = await fetch(`/api/rsvp?deviceId=${encodeURIComponent(deviceId)}`, {
+                    method: "GET",
+                    headers: { "Content-Type": "application/json" },
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.hasRsvped && (data.reply === "accept" || data.reply === "decline")) {
+                        setStatus("sent");
+                        setReply(data.reply);
+                        if (typeof window !== "undefined") {
+                            localStorage.setItem("cj_wedding_rsvp_status", "sent");
+                            localStorage.setItem("cj_wedding_rsvp_reply", data.reply);
+                        }
+                    } else if (!data.hasRsvped) {
+                        // If DB indicates no RSVP, reset local state
+                        setStatus((prev) => (prev === "sending" ? prev : "idle"));
+                        if (typeof window !== "undefined") {
+                            localStorage.removeItem("cj_wedding_rsvp_status");
+                            localStorage.removeItem("cj_wedding_rsvp_reply");
+                        }
+                    }
+                }
+            } catch (err) {
+                console.error("Failed to check RSVP status:", err);
+            } finally {
+                setIsChecking(false);
+            }
+        }
+
+        verifyExistingRsvp();
+    }, []);
 
     function choose(next: Reply) {
         setReply(next);
@@ -66,7 +130,12 @@ export default function Rsvp({
         setStatus("sending");
 
         try {
-            await onSubmit({
+            const deviceId =
+                typeof window !== "undefined"
+                    ? localStorage.getItem("cj_wedding_device_id") || ""
+                    : "";
+
+            const result = await onSubmit({
                 name: name.trim(),
                 reply,
                 plusOneName:
@@ -74,8 +143,17 @@ export default function Rsvp({
                         ? plusOneName.trim()
                         : undefined,
                 message: message.trim() || undefined,
+                deviceId,
             });
+
+            const finalReply = (result?.reply as Reply) || reply;
+            setReply(finalReply);
             setStatus("sent");
+
+            if (typeof window !== "undefined") {
+                localStorage.setItem("cj_wedding_rsvp_status", "sent");
+                localStorage.setItem("cj_wedding_rsvp_reply", finalReply);
+            }
         } catch (err: unknown) {
             setStatus("idle");
             const errorMessage =
@@ -111,19 +189,26 @@ export default function Rsvp({
                                     : "We\u2019ll miss you, and thank you for letting us know."}
                             </p>
                         </>
+                    ) : isChecking ? (
+                        <div className="flex flex-col items-center justify-center py-6 gap-2">
+                            <div className="h-0.5 w-16 bg-[#b8955a]/40 animate-pulse" />
+                            <p className="font-display text-lg text-olive/80 animate-pulse">
+                                Checking invitation status…
+                            </p>
+                        </div>
                     ) : (
                         <>
                             <h2 className="font-display mb-4 text-4xl leading-tight font-bold text-olive sm:text-[40px]">
                                 Will you join us?
                             </h2>
                             <p className="mb-6 text-xl text-olive">
-                                Kindly respond by  21ˢᵗ October
+                                Kindly respond by 21ˢᵗ October
                             </p>
                         </>
                     )}
                 </header>
 
-                {status !== "sent" && (
+                {status !== "sent" && !isChecking && (
                     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                         <div>
                             <label htmlFor="rsvp-name" className={labelClass}>
