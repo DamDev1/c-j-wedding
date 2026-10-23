@@ -827,6 +827,7 @@ export function ProgramClient() {
               <li>Pastor Yemi Akinseye-George</li>
               <li>Pastor Olumayowa Aleshin</li>
               <li>Pastor Ikponmwosa Omoigiade</li>
+              <li>Pastor Kayode Nariwo</li>
             </ol>
           </footer>
         </Reveal>

@@ -3,7 +3,6 @@
 import { FloralFrame } from "@/components/Decoration";
 import { useState, useEffect, type FormEvent } from "react";
 
-// Placeholders from the design — replace with the real details
 const COUPLE = "Chioma & John";
 const PLUS_ONE_CONFIRM_DATE = "21ˢᵗ October";
 
@@ -17,7 +16,6 @@ export type RsvpData = {
     deviceId?: string;
 };
 
-// Default submit handler. Sends RSVP data to the Resend-powered /api/rsvp endpoint.
 async function postRsvp(data: RsvpData): Promise<{ success?: boolean; hasRsvped?: boolean; reply?: Reply }> {
     const res = await fetch("/api/rsvp", {
         method: "POST",
