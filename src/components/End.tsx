@@ -8,19 +8,13 @@ export function End() {
             id="rsvp"
             className="relative flex min-h-[700px] flex-col items-center justify-center overflow-hidden "
         >
-            {/* Background photo */}
             <div
                 className="absolute inset-0 bg-cover bg-top md:min-h-[800px]"
                 style={{ backgroundImage: "url(/images/gallery-4.png)" }}
             />
-
-            {/* Dark olive overlay */}
             <div className="absolute inset-0 bg-olive/70" />
-
-            {/* Floral decoration at bottom */}
             <FloralBottom />
 
-            {/* Content */}
             <div className="relative z-10 flex flex-col items-center gap-6 px-6 text-center">
                 <Reveal>
                     <h2 className="font-display text-[clamp(40px,8vw,64px)] leading-[1.25] font-bold text-white italic">

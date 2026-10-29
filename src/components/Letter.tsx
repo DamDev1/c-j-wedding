@@ -165,9 +165,9 @@ export function Letter() {
             </div>
 
             <div className="relative z-10">
-                <Button href="#rsvp" tone="olive" onClick={() => router.push("/rsvp")}>
+                {/* <Button href="#rsvp" tone="olive" onClick={() => router.push("/rsvp")}>
                     RSVP
-                </Button>
+                </Button> */}
             </div>
         </section>
     );

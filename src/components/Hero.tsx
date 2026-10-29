@@ -92,9 +92,9 @@ export function Hero() {
               >
                 Programme
               </a>
-              <Button className="hero-btn" onClick={() => router.push("/rsvp")}>
+              {/* <Button className="hero-btn" onClick={() => router.push("/rsvp")}>
                 RSVP
-              </Button>
+              </Button> */}
             </nav>
           </div>
         </header>
