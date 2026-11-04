@@ -3,6 +3,7 @@
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { Reveal } from "@/components/Reveal";
+import { Button } from "@/components/Button";
 
 /* ------------------------------------------------------------------ */
 /* Types & helper components                                          */
@@ -123,6 +124,11 @@ export function ProgramClient() {
           >
             {areAllExpanded ? "Collapse all" : "Expand all"}
           </button>
+          <Reveal delay={300}>
+            <Button href="/share-photos">
+              Share Photos
+            </Button>
+          </Reveal>
         </div>
       </nav>
 
