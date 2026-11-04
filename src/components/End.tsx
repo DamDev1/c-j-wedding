@@ -28,11 +28,19 @@ export function End() {
                     </p>
                 </Reveal>
 
-                <Reveal delay={300}>
-                    <Button href="/program" tone="white">
-                        View the programme
-                    </Button>
-                </Reveal>
+                <div className="flex gap-2">
+                    <Reveal delay={300}>
+                        <Button href="/program" tone="white">
+                            View the programme
+                        </Button>
+                    </Reveal>
+
+                    <Reveal delay={300}>
+                        <Button href="/share-photos" tone="olive">
+                            Share your photos
+                        </Button>
+                    </Reveal>
+                </div>
 
                 <Reveal delay={450}>
                     <p className="mt-8 font-script text-[clamp(120px,28vw,260px)] leading-none text-white/80 md:mt-12">

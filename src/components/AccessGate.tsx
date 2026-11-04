@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, FormEvent } from "react";
+import { usePathname } from "next/navigation";
 import { FloralFrame } from "./Decoration";
 
 interface AccessGateProps {
@@ -8,7 +9,13 @@ interface AccessGateProps {
 }
 
 export function AccessGate({ children }: AccessGateProps) {
+  const pathname = usePathname();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+
+  // If visiting the secure gallery admin page, bypass the guest phone gate
+  if (pathname?.startsWith("/gallery")) {
+    return <>{children}</>;
+  }
   const [phone, setPhone] = useState("");
   const [deviceId, setDeviceId] = useState("");
   const [loading, setLoading] = useState(false);

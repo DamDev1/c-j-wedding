@@ -77,7 +77,7 @@ export function HeroTwo() {
             </div>
           </Reveal>
         </div>
-{/* 
+
         <Reveal delay={800}>
           <div>
             <Button
@@ -87,7 +87,7 @@ export function HeroTwo() {
               RSVP
             </Button>
           </div>
-        </Reveal> */}
+        </Reveal>
       </div>
 
       {/* Scroll cue with enhanced visibility */}
