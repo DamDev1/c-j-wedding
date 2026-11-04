@@ -41,11 +41,19 @@ export function TheDay() {
           ))}
         </div>
 
-        <Reveal delay={300}>
-          <Button href="/program" tone="white">
-            View the programme
-          </Button>
-        </Reveal>
+        <div className="flex gap-3">
+          <Reveal delay={300}>
+            <Button href="/program" tone="white">
+              View the programme
+            </Button>
+          </Reveal>
+
+          <Reveal delay={300}>
+            <Button href="/share-photos" tone="white">
+              Share Photos
+            </Button>
+          </Reveal>
+        </div>
       </div>
     </section>
   );

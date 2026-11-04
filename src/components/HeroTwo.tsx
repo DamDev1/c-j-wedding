@@ -79,18 +79,24 @@ export function HeroTwo() {
         </div>
 
         <Reveal delay={800}>
-          <div>
+          <div className="flex gap-3">
+            <Button
+              href="/program"
+              onClick={() => router.push("/program")}
+              tone="white"
+            >
+              View Programme
+            </Button>
             <Button
               href="#rsvp"
-              onClick={() => router.push("/rsvp")}
+              onClick={() => router.push("/share-photos")}
             >
-              RSVP
+              Share Photos
             </Button>
           </div>
         </Reveal>
       </div>
 
-      {/* Scroll cue with enhanced visibility */}
       <div
         aria-hidden
         className="absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-2.5 text-[11px] font-medium tracking-[0.3em] text-white/90 uppercase"

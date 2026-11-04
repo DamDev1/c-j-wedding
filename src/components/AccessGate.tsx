@@ -11,11 +11,6 @@ interface AccessGateProps {
 export function AccessGate({ children }: AccessGateProps) {
   const pathname = usePathname();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-
-  // If visiting the secure gallery admin page, bypass the guest phone gate
-  if (pathname?.startsWith("/gallery")) {
-    return <>{children}</>;
-  }
   const [phone, setPhone] = useState("");
   const [deviceId, setDeviceId] = useState("");
   const [loading, setLoading] = useState(false);
@@ -90,6 +85,11 @@ export function AccessGate({ children }: AccessGateProps) {
     } finally {
       setLoading(false);
     }
+  }
+
+  // 0. If visiting the secure gallery admin page, bypass the guest phone gate
+  if (pathname?.startsWith("/gallery")) {
+    return <>{children}</>;
   }
 
   // 1. Loading check screen (seamless transition without flash)
