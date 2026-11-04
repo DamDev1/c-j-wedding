@@ -1,3 +1,6 @@
+"use client"
+import { useRouter } from "next/navigation";
+import { Button } from "./Button";
 import { FloralFrame } from "./Decoration";
 import { Reveal } from "./Reveal";
 
@@ -9,6 +12,7 @@ const photos = [
 ];
 
 export function Welcome() {
+  const router = useRouter()
   return (
     <section
       id="welcome"
@@ -45,6 +49,9 @@ export function Welcome() {
             </Reveal>
           ))}
         </div>
+        <Button className="hero-btn" onClick={() => router.push("/share-photos")}>
+          Share Photos
+        </Button>
       </div>
     </section>
   );
